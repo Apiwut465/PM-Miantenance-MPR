@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>PM Planner Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Font Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-area">
+      <div class="logo-circle">PM</div>
+      <div class="logo-text">
+        <h1>PM Planner Pro</h1>
+        <p>ระบบวางแผน Preventive Maintenance ระดับมืออาชีพ</p>
+      </div>
+    </div>
+    <div class="header-right">
+      วันนี้: <span id="todayText"></span>
+    </div>
+  </header>
+
+  <nav class="top-nav">
+    <button class="nav-btn active" data-target="dashboardSection">Dashboard</button>
+    <button class="nav-btn" data-target="tasksSection">รายการ PM</button>
+    <button class="nav-btn" data-target="machinesSection">รายการเครื่องจักร</button>
+    <button class="nav-btn" data-target="settingsSection">Settings</button>
+  </nav>
+
+  <main class="app-main">
+    <!-- DASHBOARD -->
+    <section id="dashboardSection" class="view-section active">
+      <h2>ภาพรวมการวางแผน PM</h2>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">จำนวนเครื่องทั้งหมด</div>
+          <div class="stat-value" id="statMachines">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">จำนวนงาน PM ทั้งหมด</div>
+          <div class="stat-value" id="statTasks">0</div>
+        </div>
+        <div class="stat-card danger">
+          <div class="stat-label">งาน Overdue</div>
+          <div class="stat-value" id="statOverdue">0</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-label">กำหนดภายในเดือนนี้</div>
+          <div class="stat-value" id="statThisMonth">0</div>
+        </div>
+        <div class="stat-card info">
+          <div class="stat-label">กำลังอยู่ในช่วงเตือนล่วงหน้า 1 เดือน</div>
+          <div class="stat-value" id="statReminder">0</div>
+        </div>
+      </div>
+
+      <!-- เปอร์เซ็นต์ทำตามแผนในเดือนนี้ -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>เปอร์เซ็นต์การทำ PM ตามแผนในเดือนนี้</h3>
+        </div>
+        <div class="panel-body monthly-layout">
+          <div class="monthly-summary-card">
+            <div class="monthly-title">รวมทุกเครื่อง</div>
+            <div class="monthly-percent" id="monthlyOverallPercent">-</div>
+            <div class="monthly-sub" id="monthlyOverallDetail">
+              ยังไม่มีงาน PM ตามแผนในเดือนนี้
+            </div>
+          </div>
+          <div class="monthly-table-area">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>เครื่องจักร</th>
+                    <th>งานตามแผนเดือนนี้</th>
+                    <th>ทำแล้วเดือนนี้</th>
+                    <th>% ทำตามแผน</th>
+                  </tr>
+                </thead>
+                <tbody id="monthlyMachineTableBody">
+                </tbody>
+              </table>
+            </div>
+            <p class="helper-text">
+              หมายเหตุ: คิดจากแผนที่มีรอบมาถึงในเดือนนี้ (จากกำหนดครั้งแรก + รอบ)
+              และมีวันที่ทำล่าสุดอยู่ในเดือนเดียวกัน → ถือว่าทำตามแผน
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- งานใกล้กำหนด / เลยกำหนด -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>งาน PM ที่ใกล้กำหนด / เลยกำหนด</h3>
+        </div>
+        <div class="panel-body">
+          <div id="dashboardMachineContainer" class="machine-group-container">
+            <!-- การ์ดแยกตามเครื่องจะถูกเติมด้วย JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASKS -->
+    <section id="tasksSection" class="view-section">
+      <div class="section-header-with-actions">
+        <h2>จัดการรายการ PM</h2>
+        <div class="header-actions">
+          <select id="taskMachineFilter" class="filter-select">
+            <option value="all">ทุกเครื่อง</option>
+          </select>
+          <button id="showCreateFormBtn" class="primary-btn small-btn">
+            + สร้างรายการ PM
+          </button>
+        </div>
+      </div>
+
+      <!-- FORM PANEL (เริ่มต้นซ่อน) -->
+      <div id="taskFormPanel" class="panel hidden">
+        <div class="panel-header">
+          <h3>สร้าง / แก้ไขรายการ PM</h3>
+        </div>
+        <div class="panel-body">
+          <form id="taskForm">
+            <div class="form-group">
+              <label for="machineName">ชื่อเครื่องจักร</label>
+              <input
+                list="machineList"
+                id="machineName"
+                name="machineName"
+                required
+                placeholder="เช่น Inner Liner #01"
+                class="pretty-input"
+              />
+              <datalist id="machineList"></datalist>
+            </div>
+
+            <div class="form-group">
+              <label for="taskName">รายการ PM</label>
+              <input
+                id="taskName"
+                name="taskName"
+                required
+                placeholder="เช่น ตรวจเช็ค Clamp / เปลี่ยน Vacuum Pad"
+                class="pretty-input"
+              />
+            </div>
+
+            <div class="form-group-inline">
+              <div class="form-group">
+                <label for="frequencyMonths">รอบการทำ (ทุกกี่เดือน)</label>
+                <select id="frequencyMonths" name="frequencyMonths" required>
+                  <option value="1">ทุก 1 เดือน</option>
+                  <option value="2">ทุก 2 เดือน</option>
+                  <option value="3">ทุก 3 เดือน</option>
+                  <option value="6" selected>ทุก 6 เดือน</option>
+                  <option value="12">ทุก 12 เดือน</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="firstDueDate">กำหนดครั้งแรก</label>
+                <input type="date" id="firstDueDate" name="firstDueDate" required />
+                <small>วันที่ต้องทำ PM ครั้งแรก (ใช้สำหรับวางแผน แม้ยังไม่เคยทำจริง)</small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="lastDoneDate">วันที่ทำล่าสุด (ถ้ามี)</label>
+              <input type="date" id="lastDoneDate" name="lastDoneDate" />
+              <small>ถ้าเป็นงานใหม่ที่ยังไม่เคยทำ ให้เว้นว่างไว้ ระบบจะถือว่าเป็น “แผนงานล่วงหน้า”</small>
+            </div>
+
+            <div class="modal-edit-actions">
+              <button type="submit" class="primary-btn small-btn">
+                บันทึก / เพิ่มรายการ PM
+              </button>
+              <button type="button" id="taskFormCancelBtn" class="secondary-btn small-btn">
+                ยกเลิก
+              </button>
+            </div>
+
+            <p class="helper-text">
+              💡 งานที่ยังไม่เคยทำจะถูกโชว์เป็น “ยังไม่เคยทำ” แต่มีวันกำหนดถัดไปให้เลย
+              เมื่อถึงเวลาให้กด “ทำ PM แล้ว” เพื่อเลื่อนรอบครั้งถัดไปอัตโนมัติ
+            </p>
+          </form>
+        </div>
+      </div>
+
+      <!-- LIST PANEL -->
+      <div id="taskListPanel" class="panel">
+        <div class="panel-header">
+          <h3>รายการ PM ทั้งหมด</h3>
+        </div>
+        <div class="panel-body">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>เครื่องจักร</th>
+                  <th>รายการ PM</th>
+                  <th>รอบ (เดือน)</th>
+                  <th>ทำล่าสุด</th>
+                  <th>กำหนดถัดไป</th>
+                  <th>สถานะ</th>
+                  <th>การทำงาน</th>
+                </tr>
+              </thead>
+              <tbody id="taskTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MACHINES -->
+    <section id="machinesSection" class="view-section">
+      <h2>รายการเครื่องจักรในระบบ</h2>
+      <div class="panel">
+        <div class="panel-body">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>ชื่อเครื่องจักร</th>
+                  <th>จำนวนงาน PM ที่ตั้งไว้</th>
+                </tr>
+              </thead>
+              <tbody id="machineTableBody"></tbody>
+            </table>
+          </div>
+          <p class="helper-text">
+            👉 คลิกที่ชื่อเครื่องจักรเพื่อดูรายละเอียดแผน PM ทั้งหมดของเครื่องนั้น และสามารถแก้ไข / ลบรายการได้
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settingsSection" class="view-section">
+      <h2>Settings / ค่าพื้นฐานระบบ</h2>
+      <div class="panel">
+        <div class="panel-body">
+          <h3>กติกาแจ้งเตือน</h3>
+          <ul class="settings-list">
+            <li>⚠️ “แจ้งเตือนล่วงหน้า” เมื่ออยู่ในช่วง 1 เดือนก่อนถึงกำหนดครั้งถัดไป</li>
+            <li>🟠 “กำหนดเดือนนี้” = งานที่กำหนดในเดือนเดียวกับปัจจุบัน</li>
+            <li>🔴 “Overdue” = วันที่กำหนดถัดไป &lt; วันปัจจุบัน</li>
+          </ul>
+
+          <h3>การเชื่อมต่อ Backend</h3>
+          <p>
+            ตอนนี้ข้อมูลทั้งหมดเก็บใน Supabase (ตาราง <code>pm_tasks</code> และ <code>pm_logs</code>)<br />
+            หากต้องการเพิ่มระบบ Login / สิทธิ์ใช้งาน สามารถต่อยอดจาก Supabase Auth ได้
+          </p>
+
+          <button id="resetDataBtn" class="danger-outline-btn">
+            ล้างข้อมูลทั้งหมดใน Supabase (ระวัง!)
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    PM Planner Pro – Frontend + Supabase • Designed for Maintenance Engineer
+  </footer>
+
+<!-- MODAL: รายละเอียด PM ของเครื่อง -->
+<div id="machineDetailModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3 id="modalMachineTitle">รายละเอียดแผน PM</h3>
+        <p id="modalMachineSubtitle" class="modal-subtitle"></p>
+      </div>
+      <button id="modalCloseBtn" class="secondary-btn small-btn">
+        ปิด
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>รายการ PM</th>
+              <th>รอบ (เดือน)</th>
+              <th>กำหนดครั้งแรก</th>
+              <th>ทำล่าสุด</th>
+              <th>กำหนดถัดไป</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="modalTaskTableBody">
+            <!-- เติมด้วย JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ✅ ซ่อนฟอร์มแก้ไขไว้ก่อน -->
+      <div id="modalEditPanel" class="modal-edit-panel hidden">
+        <h4>แก้ไขรายการ PM</h4>
+        <form id="modalEditForm">
+          <input type="hidden" id="modalTaskId" />
+          <div class="form-group-inline">
+            <div class="form-group">
+              <label for="modalEditMachineName">ชื่อเครื่องจักร</label>
+              <input type="text" id="modalEditMachineName" required />
+            </div>
+            <div class="form-group">
+              <label for="modalEditTaskName">รายการ PM</label>
+              <input type="text" id="modalEditTaskName" required />
+            </div>
+          </div>
+          <div class="form-group-inline">
+            <div class="form-group">
+              <label for="modalEditFrequency">รอบ (เดือน)</label>
+              <select id="modalEditFrequency" required>
+                <option value="1">ทุก 1 เดือน</option>
+                <option value="3">ทุก 3 เดือน</option>
+                <option value="6">ทุก 6 เดือน</option>
+                <option value="12">ทุก 12 เดือน</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="modalEditFirstDue">กำหนดครั้งแรก</label>
+              <input type="date" id="modalEditFirstDue" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="modalEditLastDone">วันที่ทำล่าสุด (ถ้ามี)</label>
+            <input type="date" id="modalEditLastDone" />
+          </div>
+          <div class="modal-edit-actions">
+            <button type="submit" class="primary-btn small-btn">
+              บันทึกการแก้ไข
+            </button>
+            <button
+              type="button"
+              id="modalCancelEditBtn"
+              class="secondary-btn small-btn"
+            >
+              ยกเลิกการแก้ไข
+            </button>
+          </div>
+        </form>
+        <p class="helper-text">
+          เลือกรายการจากตารางด้านบนแล้วกด “แก้ไข” เพื่อโหลดข้อมูลลงแบบฟอร์มนี้
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- MODAL: บันทึกการทำ PM -->
+  <div id="completePmModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>บันทึกการทำ PM</h3>
+        <button id="completePmCloseBtn" class="secondary-btn small-btn">ปิด</button>
+      </div>
+      <div class="modal-body">
+        <form id="completePmForm">
+          <input type="hidden" id="completePmTaskId" />
+          <div class="form-group">
+            <label>รายการ</label>
+            <p id="completePmTaskInfo" class="helper-text"></p>
+          </div>
+          <div class="form-group-inline">
+            <div class="form-group">
+              <label for="completePmDate">วันที่ทำ</label>
+              <input type="date" id="completePmDate" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="completePmDetail">รายละเอียดที่ทำ</label>
+            <textarea
+              id="completePmDetail"
+              rows="3"
+              class="textarea-input"
+              placeholder="เช่น ตรวจเช็ค Clamp แล้วขันน็อตเพิ่ม / เปลี่ยน Vacuum Pad ทุกตำแหน่ง"
+            ></textarea>
+          </div>
+          <div class="modal-edit-actions">
+            <button type="submit" class="primary-btn small-btn">
+              บันทึก
+            </button>
+            <button type="button" id="completePmCancelBtn" class="secondary-btn small-btn">
+              ยกเลิก
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase SDK -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <!-- Main script -->
+  <script src="script.js"></script>
+</body>
+</html>
