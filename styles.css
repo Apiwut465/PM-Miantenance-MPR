@@ -222,7 +222,7 @@ h3 {
 
 .stat-value {
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .stat-card.danger {
@@ -705,7 +705,7 @@ button {
 
 .monthly-percent {
   font-size: 34px;
-  font-weight: 700;
+  font-weight: 500;
   margin-bottom: 4px;
 }
 
