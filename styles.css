@@ -274,6 +274,17 @@ table {
   border-collapse: collapse;
   font-size: 13px;
 }
+/* ป้องกันตัวหนังสือยาว ๆ ล้นออกนอกจอ โดยเฉพาะในมือถือ */
+th,
+td {
+  word-break: break-word;
+}
+
+/* ให้การเลื่อน table / modal ในนมือถือลื่นขึ้น */
+.table-wrapper,
+.modal-body {
+  -webkit-overflow-scrolling: touch;
+}
 
 thead {
   background: rgba(15, 23, 42, 0.95);
@@ -739,5 +750,197 @@ button {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+/* ========== Responsive: Tablet & Mobile (≤ 768px) ========== */
+@media (max-width: 768px) {
+  body {
+    font-size: 13px;
+  }
+
+  .app-header {
+    padding: 10px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .logo-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .logo-text h1 {
+    font-size: 18px;
+  }
+
+  .logo-text p {
+    font-size: 11px;
+  }
+
+  .header-right {
+    font-size: 11px;
+  }
+
+  .top-nav {
+    padding: 6px 12px 0 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .top-nav::-webkit-scrollbar {
+    display: none; /* ซ่อน scrollbar ให้ดูสะอาด */
+  }
+
+  .nav-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .app-main {
+    padding: 12px 12px 24px 12px;
+  }
+
+  h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .section-header-with-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .filter-select {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .stats-grid {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .stat-card {
+    padding: 10px 12px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 6px 8px;
+  }
+
+  .status-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .machine-card-body {
+    padding: 6px 8px 8px 8px;
+  }
+
+  .monthly-layout {
+    grid-template-columns: 1fr; /* บังคับให้สรุป + ตารางเรียงลงล่าง */
+    gap: 10px;
+  }
+
+  .monthly-summary-card {
+    padding: 10px 12px;
+  }
+
+  .monthly-percent {
+    font-size: 28px;
+  }
+
+  .panel {
+    margin-bottom: 14px;
+  }
+
+  .panel-body {
+    padding: 10px;
+  }
+
+  .modal {
+    width: 96vw;
+    max-width: 96vw;
+    max-height: 86vh;
+  }
+
+  .modal-header {
+    padding: 8px 10px;
+  }
+
+  .modal-body {
+    padding: 8px 10px 10px 10px;
+  }
+
+  .modal-edit-actions {
+    flex-wrap: wrap;
+  }
+
+  .app-footer {
+    font-size: 10px;
+    padding: 8px 10px;
+  }
+}
+
+/* ========== Responsive: มือถือเล็กมาก (≤ 480px) ========== */
+@media (max-width: 480px) {
+  .logo-text h1 {
+    font-size: 16px;
+  }
+
+  .logo-text p {
+    font-size: 10px;
+  }
+
+  .header-right {
+    font-size: 10px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .monthly-percent {
+    font-size: 24px;
+  }
+
+  .nav-btn {
+    padding: 5px 10px;
+  }
+
+  th,
+  td {
+    padding: 5px 6px;
+  }
+
+  .primary-btn,
+  .secondary-btn,
+  .danger-outline-btn,
+  .chip-btn {
+    font-size: 11px;
+    padding: 5px 10px;
   }
 }
