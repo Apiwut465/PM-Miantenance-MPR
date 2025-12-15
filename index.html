@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <title>PM Planner MVR</title>
+  <title>TPM Planner MVR</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Font Prompt -->
@@ -20,7 +20,7 @@
     <div class="logo-area">
       <div class="logo-circle">PM</div>
       <div class="logo-text">
-        <h1>PM Planner Pro</h1>
+        <h1>TPM Planner MVR</h1>
         <p>ระบบวางแผน Preventive Maintenance MVR</p>
       </div>
     </div>
@@ -39,7 +39,7 @@
   <main class="app-main">
     <!-- DASHBOARD -->
     <section id="dashboardSection" class="view-section active">
-      <h2>ภาพรวมการวางแผน PM</h2>
+      <h2>ภาพรวมการวางแผน TPM</h2>
 
       <div class="stats-grid">
         <div class="stat-card">
@@ -47,7 +47,7 @@
           <div class="stat-value" id="statMachines">0</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">จำนวนงาน PM ทั้งหมด</div>
+          <div class="stat-label">จำนวนงาน TPM ทั้งหมด</div>
           <div class="stat-value" id="statTasks">0</div>
         </div>
         <div class="stat-card danger">
@@ -67,14 +67,14 @@
       <!-- เปอร์เซ็นต์ทำตามแผนในเดือนนี้ -->
       <div class="panel">
         <div class="panel-header">
-          <h3>เปอร์เซ็นต์การทำ PM ตามแผนในเดือนนี้</h3>
+          <h3>เปอร์เซ็นต์การทำ TPM ตามแผนในเดือนนี้</h3>
         </div>
         <div class="panel-body monthly-layout">
           <div class="monthly-summary-card">
             <div class="monthly-title">รวมทุกเครื่อง</div>
             <div class="monthly-percent" id="monthlyOverallPercent">-</div>
             <div class="monthly-sub" id="monthlyOverallDetail">
-              ยังไม่มีงาน PM ตามแผนในเดือนนี้
+              ยังไม่มีงาน TPM ตามแผนในเดือนนี้
             </div>
           </div>
           <div class="monthly-table-area">
@@ -116,13 +116,13 @@
     <!-- TASKS -->
     <section id="tasksSection" class="view-section">
       <div class="section-header-with-actions">
-        <h2>จัดการรายการ PM</h2>
+        <h2>จัดการรายการ TPM</h2>
         <div class="header-actions">
           <select id="taskMachineFilter" class="filter-select">
             <option value="all">ทุกเครื่อง</option>
           </select>
           <button id="showCreateFormBtn" class="primary-btn small-btn">
-            + สร้างรายการ PM
+            + สร้างรายการ TPM
           </button>
         </div>
       </div>
@@ -130,7 +130,7 @@
       <!-- FORM PANEL (เริ่มต้นซ่อน) -->
       <div id="taskFormPanel" class="panel hidden">
         <div class="panel-header">
-          <h3>สร้าง / แก้ไขรายการ PM</h3>
+          <h3>สร้าง / แก้ไขรายการ TPM</h3>
         </div>
         <div class="panel-body">
           <form id="taskForm">
@@ -148,7 +148,7 @@
             </div>
 
             <div class="form-group">
-              <label for="taskName">รายการ PM</label>
+              <label for="taskName">รายการ TPM</label>
               <input
                 id="taskName"
                 name="taskName"
@@ -173,7 +173,7 @@
               <div class="form-group">
                 <label for="firstDueDate">กำหนดครั้งแรก</label>
                 <input type="date" id="firstDueDate" name="firstDueDate" required />
-                <small>วันที่ต้องทำ PM ครั้งแรก (ใช้สำหรับวางแผน แม้ยังไม่เคยทำจริง)</small>
+                <small>วันที่ต้องทำ TPM ครั้งแรก (ใช้สำหรับวางแผน แม้ยังไม่เคยทำจริง)</small>
               </div>
             </div>
 
@@ -185,7 +185,7 @@
 
             <div class="modal-edit-actions">
               <button type="submit" class="primary-btn small-btn">
-                บันทึก / เพิ่มรายการ PM
+                บันทึก / เพิ่มรายการ TPM
               </button>
               <button type="button" id="taskFormCancelBtn" class="secondary-btn small-btn">
                 ยกเลิก
@@ -194,7 +194,7 @@
 
             <p class="helper-text">
               💡 งานที่ยังไม่เคยทำจะถูกโชว์เป็น “ยังไม่เคยทำ” แต่มีวันกำหนดถัดไปให้เลย
-              เมื่อถึงเวลาให้กด “ทำ PM แล้ว” เพื่อเลื่อนรอบครั้งถัดไปอัตโนมัติ
+              เมื่อถึงเวลาให้กด “ทำ TPM แล้ว” เพื่อเลื่อนรอบครั้งถัดไปอัตโนมัติ
             </p>
           </form>
         </div>
@@ -203,7 +203,7 @@
       <!-- LIST PANEL -->
       <div id="taskListPanel" class="panel">
         <div class="panel-header">
-          <h3>รายการ PM ทั้งหมด</h3>
+          <h3>รายการ TPM ทั้งหมด</h3>
         </div>
         <div class="panel-body">
           <div class="table-wrapper">
@@ -211,7 +211,7 @@
               <thead>
                 <tr>
                   <th>เครื่องจักร</th>
-                  <th>รายการ PM</th>
+                  <th>รายการ TPM</th>
                   <th>รอบ (เดือน)</th>
                   <th>ทำล่าสุด</th>
                   <th>กำหนดถัดไป</th>
@@ -236,14 +236,14 @@
               <thead>
                 <tr>
                   <th>ชื่อเครื่องจักร</th>
-                  <th>จำนวนงาน PM ที่ตั้งไว้</th>
+                  <th>จำนวนงาน TPM ที่ตั้งไว้</th>
                 </tr>
               </thead>
               <tbody id="machineTableBody"></tbody>
             </table>
           </div>
           <p class="helper-text">
-            👉 คลิกที่ชื่อเครื่องจักรเพื่อดูรายละเอียดแผน PM ทั้งหมดของเครื่องนั้น และสามารถแก้ไข / ลบรายการได้
+            👉 คลิกที่ชื่อเครื่องจักรเพื่อดูรายละเอียดแผน TPM ทั้งหมดของเครื่องนั้น และสามารถแก้ไข / ลบรายการได้
           </p>
         </div>
       </div>
@@ -417,6 +417,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
